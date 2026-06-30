@@ -94,19 +94,19 @@ h1,h2,h3,h4{ font-family:var(--serif); font-weight:400; line-height:1.04; letter
 }
 .tb-phones a{
   display:inline-flex; align-items:center; gap:7px;
-  font-size:.72rem; color:rgba(248,250,253,.72);
+  font-size:.82rem; color:rgba(248,250,253,.72);
   transition:color .3s var(--ease); white-space:nowrap;
 }
 .tb-phones a:hover{ color:#fff; }
 .tb-loc{
-  font-size:.62rem; letter-spacing:.2em; text-transform:uppercase;
+  font-size:.82rem; letter-spacing:.2em; text-transform:uppercase;
   color:var(--brass); font-weight:600;
 }
-.tb-sep{ color:rgba(255,255,255,.2); font-size:.72rem; }
+.tb-sep{ color:rgba(255,255,255,.2); font-size:.82rem; }
 
 /* Nav row (second row of header) */
-.nav-bar{ padding:13px 0; transition:padding .4s var(--ease); }
-.site-header.solid .nav-bar{ padding:10px 0; }
+.nav-bar{ padding-block:13px; transition:padding .4s var(--ease); }
+.site-header.solid .nav-bar{ padding-block:10px; }
 
 @media(max-width:768px){ .topbar{ display:none; } }
 
@@ -336,7 +336,7 @@ section{ position:relative; z-index:2; }
 .member:hover .ph{ box-shadow:0 26px 50px -30px rgba(15,34,71,.5); }
 .member h4{ font-size:1.18rem; margin-top:18px; }
 .member .role{ font-size:.78rem; letter-spacing:.12em; text-transform:uppercase; color:var(--brass-deep); margin-top:6px; }
-.member .ct{ font-size:.85rem; color:var(--mist); margin-top:8px; word-break:break-word; }
+.member .ct{ display:block; font-size:.85rem; color:var(--mist); margin-top:8px; word-break:break-word; }
 
 .group-label{ grid-column:1/-1; display:flex; align-items:center; gap:18px; margin-top:18px; }
 .group-label span{ font-size:.74rem; letter-spacing:.26em; text-transform:uppercase; color:var(--brass-deep); font-weight:600; }
@@ -490,7 +490,7 @@ section{ position:relative; z-index:2; }
 .quote .who .src{ margin-top:0; }
 
 /* team bio line + office tag on member cards */
-.member .loc{ display:inline-block; font-size:.66rem; letter-spacing:.14em; text-transform:uppercase; color:var(--brass-deep); margin-top:10px; }
+.member .loc{ display:block; font-size:.66rem; letter-spacing:.14em; text-transform:uppercase; color:var(--brass-deep); margin-top:10px; }
 .member .bio{ font-size:.9rem; color:var(--mist); margin-top:8px; line-height:1.5; }
 
 /* personal note aside on about */
@@ -576,7 +576,7 @@ section{ position:relative; z-index:2; }
    ============================================================ */
 .office-photo{
   aspect-ratio:16/9; overflow:hidden;
-  margin:-38px -34px 28px;
+  margin:-22px -34px 28px;
   background:var(--paper-2);
   border-radius:3px 3px 0 0;
 }
