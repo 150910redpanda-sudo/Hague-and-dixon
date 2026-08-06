@@ -306,6 +306,7 @@ section{ position:relative; z-index:2; }
 .band.teal .eyebrow{ color:var(--brass); }
 .band.teal h2,.band.teal h3{ color:var(--cream); }
 .band.cream{ background:var(--cream); }
+.band.paper{ background:var(--paper); }
 
 .sec-head{ max-width:62ch; margin-bottom:56px; }
 .sec-head h2{ font-size:clamp(2rem,5vw,3.6rem); margin-top:20px; }
@@ -431,6 +432,33 @@ section{ position:relative; z-index:2; }
 .cta-band p{ color:rgba(251,248,241,.72); max-width:50ch; margin:24px auto 0; }
 .cta-band .btn{ background:var(--brass); color:var(--ink); margin-top:40px; }
 .cta-band .btn:hover{ background:#cda05f; }
+
+/* ---------- Cookie consent banner ---------- */
+.cookie-banner{
+  position:fixed; left:0; right:0; bottom:0; z-index:200;
+  background:var(--teal-deep);
+  transform:translateY(100%); transition:transform .5s var(--ease);
+  box-shadow:0 -10px 34px -12px rgba(13,27,46,.45);
+}
+.cookie-banner.in{ transform:translateY(0); }
+.cookie-banner-inner{
+  display:flex; align-items:center; justify-content:space-between; gap:28px;
+  flex-wrap:wrap; padding:22px 0;
+}
+.cookie-banner p{ font-size:.92rem; line-height:1.55; color:rgba(251,248,241,.8); max-width:60ch; }
+.cookie-banner a{ color:var(--brass); text-decoration:underline; }
+.cookie-banner-btns{ display:flex; gap:12px; flex-wrap:wrap; flex-shrink:0; }
+.cookie-banner .btn{ flex-shrink:0; padding:14px 24px; }
+.cookie-banner .btn.cookie-accept{ background:var(--brass); color:var(--ink); }
+.cookie-banner .btn.cookie-accept:hover{ background:#cda05f; }
+.btn.ghost-light{ background:transparent; color:rgba(251,248,241,.85); border:1px solid rgba(251,248,241,.35); }
+.btn.ghost-light:hover{ background:rgba(251,248,241,.1); color:#fff; border-color:rgba(251,248,241,.6); }
+@media (max-width:700px){
+  .cookie-banner-inner{ padding:18px 0; }
+  .cookie-banner p{ font-size:.85rem; max-width:none; }
+  .cookie-banner-btns{ width:100%; }
+  .cookie-banner .btn{ flex:1; justify-content:center; padding:13px 16px; }
+}
 
 /* ---------- Footer ---------- */
 .site-footer{ background:var(--ink); color:#c7d0cd; padding:80px 0 40px; position:relative; z-index:2; }
