@@ -8,7 +8,7 @@ backend, no database.
 
 ```
 Served to visitors
-  *.html                 19 content pages + 404.html
+  *.html                 20 content pages + 404.html
   style.css              the whole design system
   script.js              all site behaviour (no inline scripts anywhere)
   assets/fonts.css       @font-face for the self-hosted fonts
@@ -257,9 +257,60 @@ is **not** readable as small text on the header — that is what `--brass-light`
 is for. `--brass-deep` sits at 5.06:1 on the darkest light ground, so there is
 not much headroom.
 
+## SRA compliance
+
+The regulatory content is deliberately spread across three places, and they
+have to stay consistent with each other:
+
+- **`costs.html`** — the SRA Transparency Rules content. Price, basis of charge,
+  disbursements, VAT, **key stages**, **typical timescales**, which funding
+  arrangements are and are not offered, and who does the work. Rules 1.4 and 1.5
+  require all of it for conveyancing, uncontested probate and Employment
+  Tribunal claims, which are the three published-price services this firm
+  offers. If a fee changes, the worked examples in the Employment section are
+  derived from the hourly rates and must be recalculated too.
+- **`legal.html`** — complaints, the Legal Ombudsman, the SRA reporting route,
+  professional indemnity insurance, and client money.
+- **The footer of every page** — the SRA digital badge, required by Rule 4 to be
+  "in a prominent place". `.foot-sra` carries the firm's own validation URL.
+
+Two things here go stale on someone else's schedule, so check them when you
+touch this area:
+
+- **The Legal Ombudsman's address.** It moved to PO Box 6167, Slough SL1 0EH in
+  January 2024. The site carried the old Wolverhampton address until now.
+- **Time limits and fees.** The LeO six-month/one-year limits, the Solicitors
+  Act assessment periods, the probate application fee and the Land Registry
+  scale are all set by third parties.
+
+The EU ODR platform reference was removed — that platform shut down on 20 July
+2025 and traders are no longer required, or able, to link to it.
+
+## Staff qualifications
+
+`team.html` carries a qualification line on each card and a fuller statement in
+the profile modal, fed by `data-tm-quals` on the `.member` element. `costs.html`
+has the matching "Who Will Do Your Work" section the SRA Transparency Rules
+require.
+
+**Everything currently published there is derived from the role the firm already
+advertises** — that a director or assistant solicitor at an SRA-authorised firm
+is an admitted solicitor, that a paralegal is supervised. No academic
+qualification, admission date or SRA roll number is asserted anywhere, because
+none is on record in this repository. If the firm supplies that detail, add it
+to `data-tm-quals` and to the visible `.quals` line; the modal picks it up with
+no further change. Nothing needs inventing to make the page render.
+
+## Vacancies
+
+`recruitment.html` currently shows a "no advertised vacancies" card. The markup
+for a real vacancy is documented in an HTML comment directly above it — replace
+that one card with a `.vacancy` block per role. Applications are addressed to
+Dawn Taylor; if that changes, it appears in three places on the page.
+
 ## Things deliberately left for the firm to decide
 
 See the launch notes for detail, but in short: the social preview image, the
-service timescales and staff qualifications on `costs.html`, the substantiation
-for the "5★ Client Rated" claim, and whether the on-site feedback form or the
-Microsoft Forms survey is the one to keep.
+service timescales and key stages on `costs.html`, the individual credentials
+described above, the substantiation for the "5★ Client Rated" claim, and whether
+the on-site feedback form or the Microsoft Forms survey is the one to keep.

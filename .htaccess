@@ -57,6 +57,11 @@ ErrorDocument 404 /404.html
 <FilesMatch "^(\.htaccess|web\.config|_headers|_redirects|\.pa11yci|\.gitignore)$">
   Require all denied
 </FilesMatch>
+# Internal notes. .txt cannot be blocked by extension — robots.txt and
+# .well-known/security.txt both have to keep serving.
+<Files "TODO.txt">
+  Require all denied
+</Files>
 # Repository tooling must never be served from the web root.
 RedirectMatch 404 ^/\.git
 RedirectMatch 404 ^/\.github

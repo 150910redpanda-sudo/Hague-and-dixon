@@ -536,6 +536,14 @@
       bio.textContent = d.tmBio || '';
       bio.hidden = !d.tmBio;
 
+      // The qualifications block is a heading plus its text; both are hidden
+      // together when a card carries no data-tm-quals.
+      var quals = $('#tmQuals');
+      var qualsHead = $('#tmQualsHead');
+      quals.textContent = d.tmQuals || '';
+      quals.hidden = !d.tmQuals;
+      qualsHead.hidden = !d.tmQuals;
+
       var img = $('#tmImg');
       var mono = $('#tmMono');
       if (d.tmImg) {

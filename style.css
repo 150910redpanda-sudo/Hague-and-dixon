@@ -188,7 +188,7 @@ h1,h2,h3,h4{ font-family:var(--serif); font-weight:400; line-height:1.04; letter
 }
 .splash-mark em{ font-style:normal; color:var(--brass-deep); }
 .splash-sub{
-  display:block; margin-top:24px;
+  display:block; margin-top: 10px;
   font-family:var(--sans); font-size:.82rem; letter-spacing:.28em;
   text-transform:uppercase; color:var(--mist);
 }
@@ -473,6 +473,23 @@ section{ position:relative; z-index:2; }
 .foot-col a:hover{ color:#fff; }
 .foot-bot{ margin-top:60px; padding-top:26px; border-top:1px solid rgba(255,255,255,.1); display:flex; flex-wrap:wrap; justify-content:space-between; gap:14px; font-size:.78rem; color:#7e8c88; }
 
+/* SRA digital badge. Transparency Rule 4 requires it in a prominent place, so
+   it sits in the footer of every page rather than the homepage alone. The
+   white plate is deliberate — the supplied artwork has a white background and
+   would otherwise sit as a hard rectangle on the dark footer. */
+.foot-sra{ display:flex; align-items:center; gap:16px; width:100%; margin-top:24px; padding-top:22px; border-top:1px solid rgba(255,255,255,.1); }
+.foot-sra img{ height:64px; width:auto; background:#fff; padding:6px; border-radius:3px; }
+.foot-sra a{ display:inline-flex; flex-shrink:0; }
+.foot-sra a:focus-visible img{ outline:2px solid var(--brass); outline-offset:3px; }
+.foot-sra .sra-note{ font-size:.76rem; color:#7e8c88; line-height:1.6; max-width:62ch; }
+
+/* Source note for the homepage rating claim. Sits with the regulatory block
+   because it does the same job: letting a reader check a claim we have made. */
+.foot-source{ font-size:.76rem; color:#7e8c88; line-height:1.6; max-width:78ch; margin-top:18px; }
+@media (max-width:560px){
+  .foot-sra{ flex-direction:column; align-items:flex-start; gap:12px; }
+}
+
 /* ---------- Page hero (interior) ---------- */
 .page-hero{ padding:clamp(140px,20vh,200px) 0 clamp(40px,7vh,80px); background:linear-gradient(180deg,var(--paper),var(--paper-2)); }
 .page-hero h1{ font-size:clamp(2.6rem,7vw,5.2rem); }
@@ -614,6 +631,18 @@ section{ position:relative; z-index:2; }
 .member .loc{ display:block; font-size:.66rem; letter-spacing:.14em; text-transform:uppercase; color:var(--brass-deep); margin-top:10px; }
 .member .bio{ font-size:.9rem; color:var(--mist); margin-top:8px; line-height:1.5; }
 
+/* qualification line on member cards — sits between the role and the office */
+.member .quals{ font-size:.82rem; color:var(--mist); margin-top:6px; line-height:1.45; }
+
+/* regulatory note closing the team grid */
+.quals-note{
+  margin-top:60px; padding-top:38px; border-top:1px solid var(--line);
+  max-width:74ch;
+}
+.quals-note h2{ font-size:clamp(1.4rem,2.6vw,1.9rem); }
+.quals-note p{ color:var(--mist); font-size:.95rem; margin-top:16px; line-height:1.7; }
+.quals-note .btn-row{ margin-top:28px; }
+
 /* personal note aside on about */
 .note-card{ background:var(--teal-deep); color:var(--cream); padding:40px 36px; border-radius:4px; }
 .note-card .eyebrow{ color:var(--brass); }
@@ -676,6 +705,37 @@ section{ position:relative; z-index:2; }
   border-radius:0 3px 3px 0; margin-top:26px;
 }
 .cost-info-box p{ color:var(--mist); font-size:.94rem; }
+
+/* ============================================================
+   VACANCY CARDS  (recruitment)
+   ============================================================ */
+.vacancy{
+  border:1px solid var(--line); border-left:3px solid var(--brass);
+  background:var(--cream); padding:26px 28px; border-radius:0 3px 3px 0;
+  margin-top:22px;
+}
+.vacancy:first-of-type{ margin-top:0; }
+.vacancy-head{
+  display:flex; flex-wrap:wrap; align-items:baseline;
+  justify-content:space-between; gap:12px;
+}
+.vacancy-head h4{ font-family:var(--serif); font-size:1.3rem; color:var(--teal); }
+.vacancy-tag{
+  font-size:.66rem; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--brass-deep); border:1px solid rgba(181,138,78,.4);
+  padding:5px 12px; border-radius:30px; white-space:nowrap;
+}
+.vacancy p{ color:var(--mist); font-size:.94rem; margin-top:14px; line-height:1.7; }
+.vacancy .tick{ list-style:none; margin-top:16px; display:grid; gap:10px; }
+.vacancy .tick li{ position:relative; padding-left:28px; color:var(--ink); font-size:.94rem; }
+.vacancy .tick li::before{
+  content:""; position:absolute; left:0; top:.6em;
+  width:16px; height:1px; background:var(--brass);
+}
+@media (max-width:560px){
+  .vacancy{ padding:22px 20px; }
+  .vacancy-tag{ white-space:normal; }
+}
 
 /* ============================================================
    PROCESS TIMELINE  (conveyancing, wills, etc.)
@@ -792,6 +852,16 @@ section{ position:relative; z-index:2; }
   color:var(--mist); font-size:.97rem; margin-top:20px;
   line-height:1.65; border-top:1px solid var(--line); padding-top:18px;
 }
+/* qualifications block in the profile modal. The heading and the paragraph are
+   hidden together by script.js when a card carries no data-tm-quals, so the
+   rule below must not add spacing that survives on its own. */
+.tm-quals-head{
+  font-size:.68rem; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--brass-deep); margin-top:20px;
+  border-top:1px solid var(--line); padding-top:18px;
+}
+.tm-quals{ color:var(--mist); font-size:.92rem; margin-top:10px; line-height:1.65; }
+
 .tm-links{
   margin-top:20px; display:flex; flex-direction:column; gap:10px;
   border-top:1px solid var(--line); padding-top:18px;
