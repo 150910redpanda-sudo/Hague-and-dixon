@@ -636,6 +636,10 @@ section{ position:relative; z-index:2; }
   font-family:var(--sans); font-size:.74rem; letter-spacing:.2em; text-transform:uppercase;
   color:var(--brass-deep); margin:26px 0 0;
 }
+@media(max-width:560px){
+  .fee-row{ grid-template-columns:1fr; gap:4px; }
+  .fee-row .fp{ white-space:normal; text-align:left; }
+}
 
 /* inline info box on costs pages */
 .cost-info-box{
