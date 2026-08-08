@@ -1,0 +1,53 @@
+# Files excluded from the Vercel deployment. They stay in git; they are simply
+# never uploaded, so requesting one returns a genuine 404 served by 404.html.
+#
+# WHY THIS FILE RATHER THAN vercel.json
+#   Vercel `redirects` emit a 3xx and `rewrites` serve the target with a 200 —
+#   neither produces a 404. Legacy `routes` supports "status": 404 but cannot be
+#   combined with a `headers` array, which we need. Excluding a file from the
+#   upload is the only mechanism that actually enforces a public 404 on Vercel.
+#
+# This replaces _redirects (Netlify/Cloudflare). .htaccess and web.config cover
+# the same ground for Apache and IIS.
+#
+# .github/scripts/check_headers.py fails the build if a non-asset file appears
+# in the web root without being listed here.
+
+# --- Repository tooling ---------------------------------------------------
+.github/
+scripts/
+docs/
+node_modules/
+.git/
+.claude/
+
+# --- Tooling manifests ----------------------------------------------------
+# The site has no runtime dependencies and no build step, so Vercel needs none
+# of these. Excluding package.json means Vercel treats the project as static
+# plus the /api functions, which is exactly right — but confirm on the first
+# preview deploy that /api/contact still responds.
+package.json
+package-lock.json
+.htmlvalidate.json
+.pa11yci
+
+# --- Documentation and internal notes -------------------------------------
+README.md
+SECURITY.md
+website-production-checklist.md
+
+# --- Source archives — these must never be downloadable --------------------
+*.zip
+*.tar
+*.tar.gz
+*.bak
+*.old
+*.sql
+*.log
+
+# --- Host configs for the other platforms ---------------------------------
+_headers
+_redirects
+.htaccess
+web.config
+.gitignore

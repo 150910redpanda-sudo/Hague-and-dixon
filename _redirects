@@ -1,0 +1,39 @@
+# Netlify / Cloudflare Pages path rules.
+#
+# _headers sets response headers but cannot block a path. Everything in the
+# repository root is served by default on these hosts, which would publish the
+# CI scripts, the tooling manifests and any source archive sitting in the repo.
+# Apache and IIS get the same protection from .htaccess and web.config.
+#
+# 404 rather than 403 — there is no reason to confirm these paths exist.
+#
+# Paths are listed explicitly rather than by extension: the splat in these files
+# matches everything after it, so a pattern like /*.md does not behave the way
+# an extension glob would. If you add a file that should not be public, add it
+# here by name.
+
+# Repository tooling
+/.github/*            /404.html   404
+/scripts/*            /404.html   404
+/docs/*               /404.html   404
+/node_modules/*       /404.html   404
+/.git/*               /404.html   404
+
+# Tooling manifests and internal notes
+/package.json         /404.html   404
+/package-lock.json    /404.html   404
+/.htmlvalidate.json   /404.html   404
+/.pa11yci             /404.html   404
+/.gitignore           /404.html   404
+/README.md            /404.html   404
+/SECURITY.md          /404.html   404
+/website-production-checklist.md   /404.html   404
+
+# Source archives — these must never be downloadable.
+/hague-dixon-A_original.zip        /404.html   404
+
+# Host configs for the other platforms
+/.htaccess            /404.html   404
+/web.config           /404.html   404
+/_headers             /404.html   404
+/_redirects           /404.html   404

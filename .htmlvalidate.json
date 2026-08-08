@@ -1,0 +1,13 @@
+{
+  "extends": [
+    "html-validate:recommended"
+  ],
+  "rules": {
+    "no-inline-style": "warn",
+    "tel-non-breaking": "off",
+    "no-redundant-for": "off",
+    "attribute-boolean-style": "off",
+    "void-style": "off",
+    "long-title": "warn"
+  }
+}

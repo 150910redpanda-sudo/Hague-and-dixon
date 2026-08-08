@@ -1,0 +1,22 @@
+# Never deploy source archives or backups — they end up publicly downloadable.
+*.zip
+*.tar
+*.tar.gz
+*.bak
+*.old
+*.sql
+*.log
+
+# Dependencies (restored with npm ci from package-lock.json)
+node_modules/
+
+# Local tooling / editor state
+.claude/settings.local.json
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Internal notes that should not be served from the web root
+website-production-checklist.md

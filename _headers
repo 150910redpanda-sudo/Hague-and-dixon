@@ -1,0 +1,59 @@
+# Security and caching headers for Netlify / Cloudflare Pages.
+#
+# Apache/cPanel hosting uses .htaccess instead; IIS/Windows uses web.config.
+# All three files are kept in sync — if you change a policy here, change it there too.
+#
+# NOTE ON THE CSP
+#   Neither script-src nor style-src carries 'unsafe-inline'. The pages have no
+#   inline <script> blocks, no on* attributes and no style="..." attributes —
+#   scripts/extract_styles.py moved the last of those into generated utility
+#   classes, and .github/scripts/check_headers.py fails the build if any come
+#   back. The one hashed exception is the JSON-LD block, which is byte-identical
+#   on every page.
+#
+#   trusted-types 'none' + require-trusted-types-for 'script' blocks every
+#   HTML-parsing sink (innerHTML, outerHTML, insertAdjacentHTML, document.write)
+#   at the browser level. script.js builds all its DOM with createElement and
+#   textContent, so nothing needs a policy. Do not "fix" a future Trusted Types
+#   error by creating a permissive policy — build the nodes instead.
+#
+#   connect-src is 'self' only; if you set FORM_ENDPOINT in script.js to an
+#   external host, add that origin to connect-src or the fetch will be blocked.
+#
+#   To collect violation reports, add a reporting endpoint and append to the
+#   policy below:  report-to csp-endpoint
+#   plus a Reporting-Endpoints header naming it. Left off by default because
+#   there is nowhere to send them yet.
+
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-vuB74S4n5axHHjlSy6ayaZ6SFSxEd58EOGNv+tlhIxA='; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests; require-trusted-types-for 'script'; trusted-types 'none'
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: accelerometer=(), autoplay=(), camera=(), display-capture=(), encrypted-media=(), fullscreen=(self), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), payment=(), usb=(), xr-spatial-tracking=()
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Resource-Policy: same-origin
+  X-Permitted-Cross-Domain-Policies: none
+
+# Fingerprint-free filenames change on every content edit, so HTML must revalidate.
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+# style.css and script.js carry no fingerprint, so they must revalidate — a long
+# max-age would leave returning visitors on a stale copy after a deploy.
+/style.css
+  Cache-Control: public, max-age=0, must-revalidate
+
+/script.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/assets/no-js.css
+  Cache-Control: public, max-age=0, must-revalidate
+
+# Font filenames are content-specific and never change.
+/assets/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/assets/img/*
+  Cache-Control: public, max-age=604800

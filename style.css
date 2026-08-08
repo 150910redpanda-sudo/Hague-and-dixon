@@ -11,7 +11,8 @@
   --teal-deep:  #0f2247;
   --teal-soft:  #2d5099;
   --brass:      #b58a4e;
-  --brass-deep: #8f6a36;
+  --brass-light: #d8b27c;   /* for small text on dark grounds — AA on --teal */
+  --brass-deep: #7d5c2a;
   --paper:      #f2f5f9;
   --paper-2:    #e5eaf3;
   --cream:      #f8fafd;
@@ -100,9 +101,9 @@ h1,h2,h3,h4{ font-family:var(--serif); font-weight:400; line-height:1.04; letter
 .tb-phones a:hover{ color:#fff; }
 .tb-loc{
   font-size:.82rem; letter-spacing:.2em; text-transform:uppercase;
-  color:var(--brass); font-weight:600;
+  color:var(--brass-light); font-weight:600;
 }
-.tb-sep{ color:rgba(255,255,255,.2); font-size:.82rem; }
+.tb-sep{ color:rgba(255,255,255,.7); font-size:.82rem; }
 
 /* Nav row (second row of header) */
 .nav-bar{ padding-block:13px; transition:padding .4s var(--ease); }
@@ -207,7 +208,7 @@ h1,h2,h3,h4{ font-family:var(--serif); font-weight:400; line-height:1.04; letter
   font-family:var(--sans); font-size:.8rem; letter-spacing:.22em;
   text-transform:uppercase; color:#fff; white-space:nowrap;
 }
-.stat-banner .sb-sep{ color:rgba(255,255,255,.3); letter-spacing:0; }
+.stat-banner .sb-sep{ color:rgba(255,255,255,.7); letter-spacing:0; }
 @media (max-width:480px){
   .stat-banner .wrap{ gap:12px; }
   .stat-banner span{ font-size:.68rem; letter-spacing:.14em; }
@@ -478,6 +479,7 @@ section{ position:relative; z-index:2; }
 .page-hero h1 em{ font-style:italic; color:var(--teal); }
 .page-hero .lead{ max-width:54ch; margin-top:24px; color:var(--mist); font-size:1.12rem; }
 .crumb{ font-size:.74rem; letter-spacing:.2em; text-transform:uppercase; color:var(--brass-deep); margin-bottom:22px; }
+.crumb a{ text-decoration:underline; text-underline-offset:3px; display:inline-block; padding-block:4px; }
 .crumb a:hover{ color:var(--teal); }
 
 /* ---------- Detail service blocks ---------- */
@@ -501,8 +503,35 @@ section{ position:relative; z-index:2; }
   font-family:var(--sans); font-size:1rem; color:var(--ink); border-radius:3px;
   transition:border .3s var(--ease);
 }
-.field input:focus,.field textarea:focus,.field select:focus{ outline:none; border-color:var(--teal); }
+/* Focus is shown with a real, non-colour-only indicator (WCAG 1.4.1, 2.4.7).
+   The previous rule set outline:none and relied on border-colour alone. */
+.field input:focus-visible,.field textarea:focus-visible,.field select:focus-visible{
+  outline:3px solid var(--teal); outline-offset:2px; border-color:var(--teal);
+}
 .field textarea{ min-height:140px; resize:vertical; }
+
+/* ---------- Form validation + status ---------- */
+.field-error{
+  margin-top:8px; font-size:.86rem; line-height:1.45;
+  color:#a3241d; font-weight:600;
+}
+.field-error::before{ content:"⚠ "; }
+.field [aria-invalid="true"]{ border-color:#a3241d; border-width:2px; }
+
+.form-status{
+  margin-top:18px; padding:14px 16px; border-left:4px solid var(--mist);
+  background:rgba(94,106,128,.08); font-size:.94rem; line-height:1.55;
+}
+.form-status:empty{ display:none; }
+.form-status.is-error{ border-left-color:#a3241d; background:rgba(163,36,29,.08); color:#7d1b16; }
+.form-status.is-success{ border-left-color:var(--teal); background:rgba(27,58,138,.08); color:var(--teal-deep); }
+.form-status.is-info{ border-left-color:var(--brass-deep); background:rgba(143,106,54,.1); color:#5f4620; }
+
+/* Honeypot: off-screen for bots to find, never shown or announced. */
+.hp-field{
+  position:absolute !important; width:1px; height:1px;
+  overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap;
+}
 
 /* ---------- Reveal animation ---------- */
 [data-reveal]{ opacity:0; transform:translateY(26px); transition:opacity .9s var(--ease), transform .9s var(--ease); }
@@ -886,3 +915,304 @@ section.band.teal .quote{ background:rgba(251,248,241,.06); border:1px solid rgb
 .svc-emails .svc-name{ font-size:.7rem; letter-spacing:.12em; text-transform:uppercase; color:var(--mist); min-width:90px; }
 .svc-emails a{ color:var(--teal-soft); }
 .svc-emails a:hover{ color:var(--teal); }
+
+/* ============================================================
+   ACCESSIBILITY FOUNDATIONS
+   Appended last so these rules win over earlier component styles.
+   ============================================================ */
+
+/* ---------- Skip link (WCAG 2.4.1) ---------- */
+.skip-link{
+  position:absolute; left:-9999px; top:0; z-index:999;
+  background:var(--teal-deep); color:var(--cream);
+  padding:14px 22px; font-size:.9rem; font-weight:600;
+  letter-spacing:.08em; text-transform:uppercase; text-decoration:none;
+}
+.skip-link:focus{
+  left:12px; top:12px;
+  outline:3px solid var(--brass); outline-offset:2px;
+}
+
+/* ---------- Visible focus everywhere (WCAG 2.4.7) ---------- */
+:focus-visible{
+  outline:3px solid var(--teal);
+  outline-offset:3px;
+  border-radius:2px;
+}
+/* On dark grounds the teal ring has too little contrast — use brass. */
+.site-footer :focus-visible,
+.cta-band :focus-visible,
+.band.teal :focus-visible,
+.cookie-banner :focus-visible,
+.mobile-menu :focus-visible,
+.topbar :focus-visible{
+  outline-color:var(--brass);
+}
+
+/* ---------- Utility ---------- */
+.is-hidden{ display:none !important; }
+.no-scroll{ overflow:hidden; }
+
+/* ---------- Team card profile trigger ---------- */
+.member{ cursor:pointer; }
+.member-more{
+  margin-top:14px; align-self:flex-start;
+  background:transparent; border:1px solid var(--line);
+  border-radius:40px; padding:9px 18px; cursor:pointer;
+  font-family:var(--sans); font-size:.7rem; font-weight:600;
+  letter-spacing:.16em; text-transform:uppercase; color:var(--teal);
+  transition:background .3s var(--ease), color .3s var(--ease), border-color .3s var(--ease);
+}
+.member-more:hover{ background:var(--teal); color:var(--cream); border-color:var(--teal); }
+
+/* ---------- Modal: fully removed from the a11y tree when closed ---------- */
+.tm-modal{ visibility:hidden; }
+.tm-modal.open{ visibility:visible; }
+
+/* ---------- Marquee pause control (WCAG 2.2.2) ---------- */
+.marquee{ position:relative; }
+.marquee.paused .marquee-track{ animation-play-state:paused; }
+.marquee-pause{
+  position:absolute; right:var(--gut); bottom:12px; z-index:2;
+  background:rgba(13,27,46,.75); color:var(--cream);
+  border:1px solid rgba(248,250,253,.35); border-radius:3px;
+  padding:8px 18px; cursor:pointer;
+  font-family:var(--sans); font-size:.72rem; font-weight:600;
+  letter-spacing:.16em; text-transform:uppercase;
+}
+.marquee-pause:hover{ background:rgba(13,27,46,.9); }
+
+/* ---------- Touch targets (WCAG 2.5.8) ---------- */
+.rating-row label,
+.rec-row label{ min-height:44px; min-width:44px; display:inline-flex; align-items:center; justify-content:center; }
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce){
+  html{ scroll-behavior:auto; }
+  *,*::before,*::after{
+    animation-duration:.01ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.01ms !important;
+    scroll-behavior:auto !important;
+  }
+  [data-reveal]{ opacity:1 !important; transform:none !important; }
+}
+
+/* ---------- Forced-colours / high-contrast mode ---------- */
+@media (forced-colors: active){
+  .btn, .member[role="button"], .marquee-pause{ border:1px solid ButtonBorder; }
+  :focus-visible{ outline:3px solid Highlight; }
+}
+
+/* ---------- Form chrome ---------- */
+/* Rating groups are <fieldset>s so screen readers announce the question with
+   each radio; the browser's default fieldset chrome is reset here. */
+fieldset{ border:0; padding:0; margin:0; min-inline-size:auto; }
+legend{ padding:0; display:block; }
+fieldset.q-block > legend.qlabel{ margin-bottom:10px; }
+
+.form-intro{ font-size:.92rem; color:var(--mist); line-height:1.55; margin-bottom:24px; max-width:60ch; }
+.form-note{ font-size:.84rem; color:var(--mist); line-height:1.5; margin-top:16px; max-width:60ch; }
+.form-note a{ color:var(--teal); text-decoration:underline; }
+.req{ color:#a3241d; text-decoration:none; font-weight:700; border:0; }
+.btn-submit{ border:0; cursor:pointer; }
+.btn-submit[disabled]{ opacity:.6; cursor:progress; }
+
+/* ---------- Contrast fixes on dark grounds ---------- */
+/* .cta-band .btn gives every button a brass fill; the ghost variant needs its
+   own treatment or its text lands on a background of the same colour. */
+/* .btn.ghost is teal-on-transparent, which only works on the light grounds.
+   Every dark section needs the light variant. */
+.cta-band .btn.ghost,
+.band.teal .btn.ghost,
+.site-footer .btn.ghost{
+  background:transparent; color:var(--cream);
+  border:1px solid rgba(251,248,241,.45);
+}
+.cta-band .btn.ghost{ margin-top:40px; }
+.cta-band .btn.ghost:hover,
+.band.teal .btn.ghost:hover,
+.site-footer .btn.ghost:hover{ background:rgba(251,248,241,.12); color:#fff; border-color:rgba(251,248,241,.75); }
+
+/* .prose p is --mist, which is tuned for the light grounds. On the teal bands
+   it drops to 2.87:1. */
+.band.teal .prose p,
+.band.teal .prose li,
+.band.teal .tick li{ color:rgba(251,248,241,.86); }
+.band.teal .prose .eyebrow{ color:var(--brass-light); }
+
+/* ---------- Inline links in body copy ---------- */
+/* Underlined so they are not identified by colour alone (WCAG 1.4.1). */
+.inline-link{ color:var(--teal); text-decoration:underline; text-underline-offset:2px; }
+.inline-link:hover{ color:var(--teal-deep); }
+.inline-link.on-dark,
+.band.teal .inline-link,
+.cta-band .inline-link,
+.site-footer .inline-link{ color:var(--brass-light); }
+.inline-link.on-dark:hover,
+.band.teal .inline-link:hover{ color:#fff; }
+
+/* === BEGIN generated utilities (extracted from inline style attributes) === */
+/* Machine-generated by scripts/extract_styles.py — do not hand-edit.
+   These replace the style="..." attributes the pages used to carry, which is
+   what allows style-src to drop 'unsafe-inline'. !important reproduces the
+   precedence an inline attribute had. Folding these into the semantic
+   component classes above is worthwhile cleanup, but not a security issue. */
+.u-038e3b1{ font-family:var(--serif) !important; font-size:clamp(1.8rem,3.5vw,2.6rem) !important; margin:18px 0 30px !important; line-height:1.05 !important; }
+.u-03c4bb6{ justify-content:center !important; }
+.u-06e9820{ color:var(--mist) !important; font-weight:400 !important; letter-spacing:0 !important; text-transform:none !important; font-size:.82rem !important; }
+.u-0b1435b{ padding-top:4px !important; }
+.u-101860a{ font-size:1.2rem !important; }
+.u-1b0f499{ margin-top:16px !important; }
+.u-1c74049{ font-size:clamp(1.8rem,4vw,3rem) !important; color:#fff !important; margin-top:18px !important; }
+.u-1c9c449{ color:inherit !important; }
+.u-1facc77{ font-family:var(--serif) !important; font-size:1.15rem !important; margin:22px 0 6px !important; color:var(--teal) !important; }
+.u-2517a51{ margin-top:22px !important; }
+.u-2ac1226{ color:var(--mist) !important; margin-top:16px !important; font-weight:600 !important; }
+.u-2b83c0d{ color:var(--mist) !important; font-size:.94rem !important; margin-bottom:20px !important; }
+.u-2c3c241{ color:var(--mist) !important; margin-top:18px !important; }
+.u-397e800{ display:grid !important; gap:0 !important; border-top:1px solid var(--line) !important; }
+.u-3a84119{ font-family:var(--serif) !important; font-size:1.2rem !important; margin:28px 0 8px !important; color:var(--teal) !important; }
+.u-3eecc81{ background:var(--teal-deep) !important; }
+.u-4260ebe{ padding-top:0 !important; }
+.u-44b4e52{ padding-block:clamp(50px,8vh,90px) !important; }
+.u-4917141{ color:var(--brass-deep) !important; }
+.u-49fcd85{ margin-top:24px !important; }
+.u-539eb46{ margin-bottom:32px !important; padding-bottom:28px !important; border-bottom:1px solid var(--line) !important; }
+.u-55161ad{ color:var(--brass) !important; }
+.u-583f758{ margin-top:28px !important; }
+.u-5d396ef{ font-family:var(--serif) !important; font-size:1.2rem !important; margin:24px 0 8px !important; color:var(--teal) !important; }
+.u-638655f{ font-style:normal !important; font-family:var(--serif) !important; font-size:1.5rem !important; color:#fff !important; }
+.u-660c1d8{ font-size:2.2rem !important; }
+.u-6d00061{ margin-left:auto !important; }
+.u-6e14ad9{ position:absolute !important; inset:0 !important; width:100% !important; height:100% !important; object-fit:cover !important; object-position:center top !important; opacity:.5 !important; mix-blend-mode:luminosity !important; }
+.u-729d2fa{ color:#fff !important; }
+.u-7976348{ font-family:var(--serif) !important; font-size:1.3rem !important; margin:24px 0 6px !important; color:var(--teal) !important; }
+.u-7a8b828{ color:rgba(251,248,241,.6) !important; }
+.u-86cd2ea{ font-size:.88rem !important; color:var(--mist) !important; letter-spacing:0 !important; text-transform:none !important; cursor:pointer !important; }
+.u-86de7ac{ margin-top:18px !important; }
+.u-87c0dec{ font-family:var(--serif) !important; font-size:1.3rem !important; margin:32px 0 6px !important; color:var(--teal) !important; }
+.u-8925074{ color:var(--mist) !important; margin-top:16px !important; }
+.u-8acc109{ font-size:1.8rem !important; }
+.u-8b3318a{ font-size:.74rem !important; letter-spacing:.2em !important; text-transform:uppercase !important; color:var(--brass-deep) !important; font-weight:600 !important; margin-bottom:20px !important; }
+.u-91a8701{ text-align:center !important; }
+.u-9834fa8{ margin-top:26px !important; display:grid !important; gap:20px !important; }
+.u-9b90d22{ font-style:normal !important; font-family:var(--sans) !important; font-size:1rem !important; color:rgba(251,248,241,.72) !important; margin-top:14px !important; line-height:1.6 !important; }
+.u-a0ce93e{ color:var(--brass-deep) !important; font-style:normal !important; font-size:.82rem !important; }
+.u-a6971be{ color:var(--brass) !important; font-size:.74rem !important; letter-spacing:.18em !important; text-transform:uppercase !important; }
+.u-a7c5cc6{ border-top:0 !important; }
+.u-af5dc16{ font-family:var(--serif) !important; font-size:1.3rem !important; margin-bottom:6px !important; color:var(--teal) !important; }
+.u-af82241{ color:rgba(251,248,241,.86) !important; font-style:italic !important; font-family:var(--serif) !important; font-size:1.1rem !important; }
+.u-b4a49b7{ color:var(--mist) !important; font-size:.9rem !important; margin-bottom:36px !important; }
+.u-b4c0695{ font-size:.74rem !important; letter-spacing:.2em !important; text-transform:uppercase !important; color:var(--brass-deep) !important; font-weight:600 !important; margin-bottom:18px !important; }
+.u-b573677{ filter:saturate(0) opacity(.65) brightness(2) !important; }
+.u-b5858f7{ color:var(--mist) !important; margin-top:12px !important; }
+.u-ba1aab4{ font-size:2rem !important; }
+.u-bea3ad6{ font-size:1.4rem !important; }
+.u-c30e25e{ color:var(--mist) !important; margin-top:22px !important; }
+.u-c6100a9{ font-family:var(--serif) !important; font-size:6rem !important; color:rgba(255,255,255,.18) !important; line-height:1 !important; position:absolute !important; top:24px !important; left:28px !important; }
+.u-ce939f9{ font-family:var(--serif) !important; font-size:6rem !important; color:rgba(255,255,255,.18) !important; line-height:1 !important; position:absolute !important; top:24px !important; right:28px !important; }
+.u-d2c171b{ margin-top:10px !important; }
+.u-d2d884d{ display:flex !important; align-items:flex-start !important; gap:12px !important; margin-bottom:28px !important; }
+.u-d4169b6{ font-size:1.6rem !important; }
+.u-d423864{ margin-top:4px !important; width:auto !important; accent-color:var(--teal) !important; }
+.u-d6f2af6{ margin-top:14px !important; }
+.u-d76404d{ color:var(--mist) !important; margin-top:14px !important; }
+.u-d9806e6{ font-size:.74rem !important; letter-spacing:.2em !important; text-transform:uppercase !important; color:var(--brass-deep) !important; font-weight:600 !important; margin-bottom:14px !important; }
+.u-da4b3cc{ color:rgba(251,248,241,.72) !important; max-width:62ch !important; margin:22px auto 0 !important; }
+.u-dbc9589{ padding:28px 30px !important; }
+.u-e259fa7{ font-size:.85rem !important; opacity:.7 !important; }
+.u-e32a933{ color:var(--mist) !important; }
+.u-f98bc17{ font-size:1.5rem !important; }
+.u-f9c6a1b{ color:var(--mist) !important; margin-top:14px !important; font-size:.94rem !important; }
+.u-fca321b{ display:flex !important; flex-direction:column !important; gap:0 !important; height:100% !important; justify-content:flex-end !important; }
+.u-fd819ff{ color:var(--mist) !important; margin-bottom:16px !important; font-size:.94rem !important; }
+/* === END generated utilities === */
+
+/* ---------- No-JavaScript fallback ---------- */
+/* Hidden by default; assets/no-js.css reveals it via <noscript>. */
+.no-js-fallback{ display:none; }
+.no-js-fallback .nj-box{
+  border:1px solid var(--line); border-left:4px solid var(--brass-deep);
+  background:var(--cream); padding:22px 24px; border-radius:3px;
+}
+.no-js-fallback h3{ font-size:1.25rem; margin-bottom:10px; }
+.no-js-fallback p{ color:var(--mist); font-size:.95rem; line-height:1.6; }
+.no-js-fallback a{ color:var(--teal); text-decoration:underline; }
+.no-js-fallback ul{ margin:14px 0 0 18px; color:var(--mist); font-size:.95rem; line-height:1.9; }
+
+/* ---------- Touch target sizes (WCAG 2.5.8, Level AA) ---------- */
+/* Standalone navigation and contact links sat at 20–23px high. WCAG exempts
+   links inline within a sentence — the footer legal strip and prose links
+   below are left alone deliberately — but these are discrete targets and need
+   the full 24px. Applied as min-height so the visual rhythm is unchanged
+   wherever the line box already clears it. */
+.foot-col a,
+.member .ct,
+.office .tel,
+.office .em,
+.dir-ct a,
+.dir-person .pct a,
+.svc-emails a,
+.pcard .reach,
+.sitemap-list a{
+  min-height:24px;
+  display:flex;
+  align-items:center;
+}
+.pcard .reach{ display:inline-flex; }
+.svc-emails a,
+.dir-ct a{ display:inline-flex; }
+
+/* Sitemap: give the list links a real target area. */
+.sitemap-list{ list-style:none; }
+.sitemap-list li{ margin:0; }
+.sitemap-list a{
+  padding:4px 0;
+  text-decoration:underline;
+  text-underline-offset:3px;
+  text-decoration-color:var(--line);
+}
+.sitemap-list a:hover{ color:var(--teal); text-decoration-color:currentColor; }
+
+/* ============================================================
+   PRINT
+   Costs, legal and contact pages get printed by clients and staff.
+   ============================================================ */
+@media print{
+  *,*::before,*::after{
+    background:#fff !important; color:#000 !important;
+    box-shadow:none !important; text-shadow:none !important;
+  }
+  body{ font-size:11pt; line-height:1.45; }
+  body::before{ content:none !important; }        /* paper-grain overlay */
+
+  /* Interactive and decorative chrome has no meaning on paper. */
+  .site-header, .mobile-menu, .skip-link, .cookie-banner,
+  .marquee, .marquee-pause, .btn-row, .cta-band, .tm-modal,
+  .member-more, .burger, .hero-art, .lines, .glow, .figure{
+    display:none !important;
+  }
+
+  main{ padding-top:0 !important; }
+  .band, .page-hero, section{ padding:0 0 18pt !important; }
+  .wrap{ max-width:none !important; padding:0 !important; }
+
+  h1{ font-size:20pt; } h2{ font-size:15pt; } h3{ font-size:12pt; }
+  h1,h2,h3,h4{ page-break-after:avoid; break-after:avoid; }
+  p, li, .fee-row, .svc-detail{ page-break-inside:avoid; break-inside:avoid; }
+  img{ max-width:55mm !important; height:auto !important; }
+
+  /* A printed link is useless without its destination. Internal links are
+     resolved against the live domain; tel:/mailto: read fine as-is. */
+  a[href^="http"]::after{ content:" (" attr(href) ")"; font-size:9pt; word-break:break-all; }
+  a[href^="/"]::after,
+  a[href$=".html"]::after{ content:" (hague-dixon.co.uk/" attr(href) ")"; font-size:9pt; }
+  a[href^="tel:"]::after, a[href^="mailto:"]::after, a[href^="#"]::after{ content:""; }
+  nav a::after, .foot-col a::after, .sitemap-list a::after,
+  .crumb a::after, .menu a::after{ content:"" !important; }
+
+  /* Footer: keep the regulatory identification, drop the navigation. */
+  .site-footer .foot-top{ display:none !important; }
+  .site-footer{ border-top:1pt solid #000; padding-top:8pt !important; font-size:9pt; }
+}

@@ -1,0 +1,7 @@
+# Security contact for https://www.hague-dixon.co.uk (RFC 9116)
+# If you believe you have found a vulnerability in this website, please tell us.
+
+Contact: mailto:york@hague-dixon.co.uk
+Expires: 2027-08-08T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://www.hague-dixon.co.uk/.well-known/security.txt

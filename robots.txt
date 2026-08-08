@@ -1,0 +1,13 @@
+# Hague & Dixon LLP
+# The whole site is public brochure content and should be indexed.
+#
+# Nothing is disallowed on purpose. Search engines render pages to judge layout
+# and mobile-friendliness, so blocking the stylesheet, script or fonts would
+# make the site look broken to a crawler. There is nothing private here to hide
+# — the only sensitive data this site handles is what a visitor types into a
+# form, and that is never stored on the server.
+
+User-agent: *
+Allow: /
+
+Sitemap: https://www.hague-dixon.co.uk/sitemap.xml

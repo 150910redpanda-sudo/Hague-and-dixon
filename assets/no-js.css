@@ -1,0 +1,33 @@
+/* Applied only via <noscript>, so it loads when JavaScript is unavailable.
+ *
+ * The scroll-reveal effect starts every [data-reveal] element at opacity:0 and
+ * relies on script.js to add .in once it scrolls into view. With no JavaScript
+ * that never happens and the entire page renders blank — including the <h1>.
+ *
+ * A <noscript><link> is used rather than <noscript><style> because the CSP has
+ * no 'unsafe-inline' for styles. This also avoids the flash that a
+ * .js-class-on-<html> approach would cause with a deferred script. */
+
+/* 1. Show all the content. */
+[data-reveal]{
+  opacity:1 !important;
+  transform:none !important;
+  transition:none !important;
+}
+
+/* 2. The burger toggles the mobile menu from script.js, so it does nothing
+      here. Hide it and keep the ordinary nav, which wraps acceptably. */
+.burger{ display:none !important; }
+.mobile-menu{ display:none !important; }
+
+@media (max-width:900px){
+  .menu{ display:flex !important; flex-wrap:wrap; justify-content:center; gap:2px; }
+  .menu a{ padding:8px 11px; font-size:.78rem; }
+  .nav{ flex-direction:column; gap:12px; }
+}
+
+/* 3. The forms are wired up by script.js and cannot submit without it.
+      Hide the controls and show the fallback notice instead of presenting a
+      button that silently does nothing. */
+form[data-hd-form]{ display:none !important; }
+.no-js-fallback{ display:block !important; }

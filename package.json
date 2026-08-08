@@ -1,0 +1,29 @@
+{
+  "name": "hague-dixon-website",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Static website for Hague & Dixon LLP, solicitors in York, Stamford Bridge and Pickering.",
+  "license": "UNLICENSED",
+  "scripts": {
+    "start": "http-server . -p 8099",
+    "check": "npm run check:html && npm run check:headers && npm run check:csp && npm run check:api && npm run check:a11y",
+    "check:html": "html-validate \"*.html\"",
+    "check:headers": "python .github/scripts/check_headers.py",
+    "check:csp": "node .github/scripts/csp-smoke-test.js",
+    "check:a11y": "pa11y-ci",
+    "check:links": "linkinator http://127.0.0.1:8099 --recurse --skip \"^https?://(?!127\\.0\\.0\\.1)\" --verbosity error",
+    "audit:deps": "npm audit --audit-level=high",
+    "extract-styles": "python scripts/extract_styles.py",
+    "check:api": "node .github/scripts/api-smoke-test.js"
+  },
+  "devDependencies": {
+    "html-validate": "9.7.1",
+    "http-server": "14.1.1",
+    "linkinator": "8.0.3",
+    "pa11y-ci": "4.1.1",
+    "puppeteer": "23.11.1"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

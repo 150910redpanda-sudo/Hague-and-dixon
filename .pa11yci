@@ -1,0 +1,44 @@
+{
+  "defaults": {
+    "standard": "WCAG2AA",
+    "runners": [
+      "axe",
+      "htmlcs"
+    ],
+    "timeout": 30000,
+    "chromeLaunchConfig": {
+      "args": [
+        "--no-sandbox",
+        "--disable-dev-shm-usage",
+        "--force-prefers-reduced-motion"
+      ]
+    },
+    "wait": 1800,
+    "hideElements": ".cookie-banner",
+    "ignore": [
+      "color-contrast"
+    ]
+  },
+  "urls": [
+    "http://127.0.0.1:8099/index.html",
+    "http://127.0.0.1:8099/about.html",
+    "http://127.0.0.1:8099/services.html",
+    "http://127.0.0.1:8099/team.html",
+    "http://127.0.0.1:8099/offices.html",
+    "http://127.0.0.1:8099/contact.html",
+    "http://127.0.0.1:8099/feedback.html",
+    "http://127.0.0.1:8099/costs.html",
+    "http://127.0.0.1:8099/conveyancing.html",
+    "http://127.0.0.1:8099/family.html",
+    "http://127.0.0.1:8099/wills.html",
+    "http://127.0.0.1:8099/attorney.html",
+    "http://127.0.0.1:8099/business.html",
+    "http://127.0.0.1:8099/employment.html",
+    "http://127.0.0.1:8099/legal.html",
+    "http://127.0.0.1:8099/privacy.html",
+    "http://127.0.0.1:8099/terms.html",
+    "http://127.0.0.1:8099/cookies.html",
+    "http://127.0.0.1:8099/sitemap.html",
+    "http://127.0.0.1:8099/404.html"
+  ]
+}

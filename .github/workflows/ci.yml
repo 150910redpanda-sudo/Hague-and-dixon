@@ -1,0 +1,102 @@
+name: Site checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# Least privilege: these jobs only ever read the repository.
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: HTML, links and accessibility
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      # `npm ci` installs exactly what package-lock.json pins. Never `npm
+      # install` in CI — it can silently resolve to newer packages, which makes
+      # the build irreproducible and widens the supply-chain surface.
+      - name: Install pinned tooling
+        run: npm ci
+
+      - name: Known vulnerabilities in tooling
+        run: npm audit --audit-level=high
+
+      - name: Validate HTML
+        run: npm run check:html
+
+      # .pa11yci pins the port, so serve on the same one.
+      - name: Start static server
+        run: |
+          npm start -- --silent &
+          npx wait-on http://127.0.0.1:8099 --timeout 60000
+
+      - name: Check links
+        run: npm run check:links
+
+      # Automated checks catch roughly a third of real barriers. Passing this
+      # job does NOT mean the site is accessible — keyboard-test changes to
+      # navigation, forms and the team modal by hand as well.
+      - name: Accessibility audit
+        run: npm run check:a11y
+
+  security:
+    name: Security policy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Install pinned tooling
+        run: npm ci
+
+      # Fails if the three host configs disagree, if the CSP is weakened, or if
+      # an inline script / style / on* handler reappears in the markup.
+      - name: Header and CSP guard
+        run: npm run check:headers
+
+      # Loads every page through a server that applies the CSP from vercel.json
+      # and fails on any violation. Catches a policy that would break the live
+      # site — which a static read of the config cannot.
+      - name: Enforce CSP against every page
+        run: npm run check:csp
+
+      # Fires malformed, oversized, CRLF-injected and cross-origin payloads at
+      # /api/contact and /api/feedback. Rate limiting is a Vercel WAF rule, not
+      # part of these functions, so it is deliberately out of scope here.
+      - name: Exercise the form endpoints
+        run: npm run check:api
+
+      # Vercel serves every uploaded file, so anything non-asset in the web root
+      # must be excluded from the deployment. check:headers enforces the list;
+      # this confirms the file itself was not deleted.
+      - name: Assert .vercelignore is present
+        run: test -f .vercelignore || (echo "::error::.vercelignore missing" && exit 1)
+
+      # No third party should receive a record of a visit. Verified, not assumed.
+      - name: Assert no third-party requests
+        run: |
+          # Site pages only — node_modules is installed above and is not shipped.
+          if grep -noP 'https?://(?!www\.hague-dixon\.co\.uk)[^"'"'"'\s)]+' *.html \
+             | grep -vE 'schema\.org|w3\.org|sra\.org\.uk|ico\.org\.uk|forms\.office\.com'; then
+            echo "::error::Unexpected external URL in markup — see the lines above."
+            exit 1
+          fi
+          echo "No unexpected external origins."
