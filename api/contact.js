@@ -15,6 +15,7 @@ const LABELS = {
   email: 'Email',
   phone: 'Telephone',
   topic: 'How can we help',
+  office: 'Office',
   msg: 'Message'
 };
 

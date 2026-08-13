@@ -128,24 +128,85 @@
    * TESTIMONIAL MARQUEE — pause control (WCAG 2.2.2)
    * ------------------------------------------------------------------ */
 
-  var marquee = $('.marquee');
-  if (marquee && !reduceMotion) {
-    var paused = false;
-    var btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'marquee-pause';
-    btn.textContent = 'Pause';
-    btn.setAttribute('aria-label', 'Pause the scrolling testimonials');
-    btn.addEventListener('click', function () {
-      paused = !paused;
-      marquee.classList.toggle('paused', paused);
-      btn.textContent = paused ? 'Play' : 'Pause';
-      btn.setAttribute('aria-label', paused
-        ? 'Resume the scrolling testimonials'
-        : 'Pause the scrolling testimonials');
+  if (!reduceMotion) {
+    $$('.marquee, .rev-wheel').forEach(function (scroller) {
+      var noun = scroller.classList.contains('rev-wheel')
+        ? 'the scrolling client reviews'
+        : 'the scrolling testimonials';
+      var paused = false;
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'marquee-pause';
+      btn.textContent = 'Pause';
+      btn.setAttribute('aria-label', 'Pause ' + noun);
+      btn.addEventListener('click', function () {
+        paused = !paused;
+        scroller.classList.toggle('paused', paused);
+        btn.textContent = paused ? 'Play' : 'Pause';
+        btn.setAttribute('aria-label', (paused ? 'Resume ' : 'Pause ') + noun);
+      });
+      scroller.appendChild(btn);
     });
-    marquee.appendChild(btn);
   }
+
+  /* ------------------------------------------------------------------ *
+   * FEATURE CAROUSEL — manual only. Nothing moves unless the visitor
+   * clicks an arrow, swipes, or scrolls the track themselves.
+   * ------------------------------------------------------------------ */
+
+  $$('.feat-carousel').forEach(function (car) {
+    var track = car.querySelector('.feat-track');
+    var slides = track ? track.querySelectorAll('.feat-slide') : [];
+    var prev = car.querySelector('.feat-arrow[data-dir="-1"]');
+    var next = car.querySelector('.feat-arrow[data-dir="1"]');
+    var counter = car.querySelector('.feat-count .cur');
+    if (!track || slides.length < 2 || !prev || !next) { return; }
+
+    // The slide we are on is tracked explicitly rather than re-derived from
+    // scrollLeft on every click: after a window resize the track can sit
+    // between two slides, and a derived index would then send the arrow
+    // straight back to where it already is.
+    var current = 0;
+    var settleUntil = 0;
+
+    function slideWidth() { return track.clientWidth || 1; }
+
+    function clamp(i) { return Math.max(0, Math.min(slides.length - 1, i)); }
+
+    function sync() {
+      var maxLeft = track.scrollWidth - track.clientWidth;
+      prev.disabled = track.scrollLeft <= 2;
+      next.disabled = track.scrollLeft >= maxLeft - 2;
+      if (counter) { counter.textContent = String(current + 1); }
+    }
+
+    function goTo(i) {
+      current = clamp(i);
+      settleUntil = Date.now() + 700;   // ignore our own in-flight scrolling
+      track.scrollTo({
+        left: current * slideWidth(),
+        behavior: reduceMotion ? 'auto' : 'smooth'
+      });
+      sync();
+    }
+
+    prev.addEventListener('click', function () { goTo(current - 1); });
+    next.addEventListener('click', function () { goTo(current + 1); });
+
+    // Swiping or trackpad-scrolling the track directly keeps `current` honest.
+    track.addEventListener('scroll', function () {
+      if (Date.now() < settleUntil) { sync(); return; }
+      current = clamp(Math.round(track.scrollLeft / slideWidth()));
+      sync();
+    }, { passive: true });
+
+    window.addEventListener('resize', function () {
+      track.scrollTo({ left: current * slideWidth(), behavior: 'auto' });
+      sync();
+    });
+
+    sync();
+  });
 
   /* ------------------------------------------------------------------ *
    * FOOTER YEAR
@@ -373,8 +434,22 @@
     return el;
   }
 
+  /* Where the mail-client fallback should be addressed.
+   *
+   * When the form offers an office picker, each <option> carries the matching
+   * mailbox in data-mailto, so the address lives beside the label it belongs to
+   * rather than in a second copy of the mapping here. This is the fallback path
+   * only — real submissions are routed server-side from environment variables,
+   * never from anything the page supplies. */
+  function mailtoTarget(form) {
+    var picker = form.querySelector('select[name="office"]');
+    var chosen = picker && picker.options[picker.selectedIndex];
+    var addr = chosen && chosen.getAttribute('data-mailto');
+    return addr || form.getAttribute('data-mailto') || 'york@hague-dixon.co.uk';
+  }
+
   function mailtoFallback(form, data) {
-    var to = form.getAttribute('data-mailto') || 'york@hague-dixon.co.uk';
+    var to = mailtoTarget(form);
     var subject = form.getAttribute('data-subject') || 'Website enquiry';
     var lines = Object.keys(data).map(function (k) {
       return labelFor(form, k) + ': ' + data[k];

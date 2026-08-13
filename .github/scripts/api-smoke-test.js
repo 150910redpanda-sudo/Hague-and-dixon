@@ -75,6 +75,7 @@ const validContact = () => ({
   email: 'jane@example.com',
   phone: '01904 000000',
   topic: 'Conveyancing',
+  office: 'York',
   msg: 'I am buying a house in York and would like a quote.'
 });
 
@@ -252,6 +253,61 @@ const validFeedback = () => ({
   check('unknown fields are dropped, not forwarded',
     r.status === 200 && !('unexpected_field' in (received[0] || {}).fields),
     JSON.stringify(received[0] && received[0].fields));
+
+  // ---- Office routing ---------------------------------------------------
+  // The visitor picks which office receives the enquiry. The submitted value is
+  // a key, never an address: only the three known offices are accepted, and the
+  // recipient is resolved from the environment. A form that let the caller name
+  // the recipient would be an open relay.
+  console.log('\nOffice routing');
+
+  process.env.MAIL_TO = 'fallback@hague-dixon.co.uk';
+  process.env.MAIL_TO_YORK = 'york@hague-dixon.co.uk';
+  process.env.MAIL_TO_PICKERING = 'pickering@hague-dixon.co.uk';
+  delete process.env.MAIL_TO_STAMFORD_BRIDGE;
+
+  for (const [office, expected] of [
+    ['York', 'york@hague-dixon.co.uk'],
+    ['Pickering', 'pickering@hague-dixon.co.uk'],
+    ['Stamford Bridge', 'fallback@hague-dixon.co.uk']   // unconfigured → MAIL_TO
+  ]) {
+    received = [];
+    r = await request('/api/contact', { body: Object.assign(validContact(), { office }) });
+    check(`office "${office}" is accepted`, r.status === 200, `got ${r.status} ${r.raw}`);
+    check(`office "${office}" routes to ${expected}`,
+      (received[0] || {}).to === expected, String((received[0] || {}).to));
+    check(`office "${office}" appears in the subject`,
+      String((received[0] || {}).subject).includes(`(${office})`),
+      String((received[0] || {}).subject));
+  }
+
+  for (const bad of [
+    'Leeds',
+    'attacker@evil.example',
+    'York, attacker@evil.example',
+    'york'                                   // case must match exactly
+  ]) {
+    received = [];
+    r = await request('/api/contact', { body: Object.assign(validContact(), { office: bad }) });
+    check(`office "${bad}" is rejected`, r.status === 400, `got ${r.status}`);
+    check(`office "${bad}" is not delivered`, received.length === 0, `${received.length} delivered`);
+  }
+
+  received = [];
+  r = await request('/api/contact', {
+    body: Object.assign(validContact(), { office: 'York\r\nBcc: attacker@evil.example' })
+  });
+  check('CRLF in office is rejected', r.status === 400, `got ${r.status}`);
+  check('CRLF office is not delivered', received.length === 0, `${received.length} delivered`);
+
+  // Omitting the field entirely must still work — the picker is optional.
+  received = [];
+  const noOffice = validContact();
+  delete noOffice.office;
+  r = await request('/api/contact', { body: noOffice });
+  check('enquiry without an office is accepted', r.status === 200, `got ${r.status}`);
+  check('enquiry without an office falls back to MAIL_TO',
+    (received[0] || {}).to === 'fallback@hague-dixon.co.uk', String((received[0] || {}).to));
 
   received = [];
   r = await request('/api/feedback', { body: validFeedback() });

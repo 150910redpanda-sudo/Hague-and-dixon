@@ -26,12 +26,20 @@ const CRLF = /[\r\n]/;
  * or in a header-adjacent position. A newline in one of those lets an attacker
  * append headers of their own and relay mail through us, so they are rejected
  * outright rather than sanitised — a legitimate name never contains one. */
+/* `office` decides which mailbox the enquiry is delivered to. It is constrained
+ * to the three known offices with oneOf, and mailer.js uses the value only as a
+ * lookup key into a fixed map of environment variables — a submitted address is
+ * never used as a recipient. Anything else here would turn the form into an
+ * open relay. */
+const OFFICES = ['York', 'Stamford Bridge', 'Pickering'];
+
 const CONTACT_FIELDS = {
-  name:  { max: 100,  required: true,  headerSafe: true },
-  email: { max: 254,  required: true,  headerSafe: true, email: true },
-  phone: { max: 40,   headerSafe: true },
-  topic: { max: 100,  headerSafe: true },
-  msg:   { max: 4000, required: true,  multiline: true }
+  name:   { max: 100,  required: true,  headerSafe: true },
+  email:  { max: 254,  required: true,  headerSafe: true, email: true },
+  phone:  { max: 40,   headerSafe: true },
+  topic:  { max: 100,  headerSafe: true },
+  office: { max: 30,   headerSafe: true, oneOf: OFFICES },
+  msg:    { max: 4000, required: true,  multiline: true }
 };
 
 const FEEDBACK_FIELDS = {
@@ -248,6 +256,7 @@ function headerValue(value, max) {
 module.exports = {
   MAX_BODY_BYTES,
   CANONICAL_ORIGIN,
+  OFFICES,
   CONTACT_FIELDS,
   FEEDBACK_FIELDS,
   RequestError,

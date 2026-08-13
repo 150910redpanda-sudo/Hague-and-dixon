@@ -25,6 +25,34 @@ const { headerValue } = require('./validate');
 
 const TIMEOUT_MS = 8000;
 
+/* Per-office delivery.
+ *
+ * The contact form lets the visitor pick which office should receive their
+ * enquiry. That choice arrives as one of three fixed strings (validate.js
+ * constrains it with oneOf) and is used ONLY as a key into this map — the
+ * recipient address itself always comes from the environment, never from the
+ * request. A submitted address must never reach a To header, or the form
+ * becomes an open relay.
+ *
+ * Each variable is optional and holds a comma-separated list. Any office
+ * without one falls back to MAIL_TO, so an existing deployment that sets only
+ * MAIL_TO keeps working exactly as before. */
+const OFFICE_ENV = {
+  'York': 'MAIL_TO_YORK',
+  'Stamford Bridge': 'MAIL_TO_STAMFORD_BRIDGE',
+  'Pickering': 'MAIL_TO_PICKERING'
+};
+
+/** Recipient list for an office, as a comma-separated string.
+ *  Falls back to MAIL_TO when the office is unknown, absent, or unconfigured. */
+function recipientsFor(office) {
+  const key = Object.prototype.hasOwnProperty.call(OFFICE_ENV, office)
+    ? OFFICE_ENV[office]
+    : null;
+  const specific = key ? process.env[key] : null;
+  return (specific && specific.trim()) || process.env.MAIL_TO || '';
+}
+
 function withTimeout(promise, ms) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), ms);
@@ -75,10 +103,12 @@ async function graphToken() {
 async function sendViaGraph(message) {
   const token = await graphToken();
   const sender = process.env.MAIL_SENDER;
-  const recipients = process.env.MAIL_TO.split(',')
+  const recipients = recipientsFor(message.office).split(',')
     .map((a) => a.trim())
     .filter(Boolean)
     .map((address) => ({ emailAddress: { address } }));
+
+  if (!recipients.length) throw new Error('no recipients configured');
 
   const payload = {
     message: {
@@ -123,12 +153,16 @@ async function sendViaWebhook(message) {
     headers['X-Webhook-Secret'] = process.env.FORM_WEBHOOK_SECRET;
   }
 
+  // The office and its resolved mailbox are passed on so the receiving flow can
+  // route without having to know the mapping itself.
+  const payload = Object.assign({}, message, { to: recipientsFor(message.office) });
+
   const t = withTimeout(null, TIMEOUT_MS);
   try {
     const res = await fetch(process.env.FORM_WEBHOOK_URL, {
       method: 'POST',
       headers,
-      body: JSON.stringify(message),
+      body: JSON.stringify(payload),
       signal: t.signal
     });
     if (!res.ok) throw new Error('webhook returned ' + res.status);
@@ -150,7 +184,11 @@ function buildMessage(kind, fields, labels) {
     : 'Website enquiry';
 
   const who = fields.name || fields.fb_name || '';
-  const subject = headerValue(who ? `${subjectBase} — ${who}` : subjectBase, 160);
+  const office = fields.office || fields.fb_office || '';
+  // The office goes in the subject so staff can see at a glance where an
+  // enquiry was addressed, even once it has been forwarded on.
+  let subject = who ? `${subjectBase} — ${who}` : subjectBase;
+  if (office) subject += ` (${office})`;
 
   const lines = Object.keys(fields).map((key) => {
     const label = labels[key] || key;
@@ -159,7 +197,8 @@ function buildMessage(kind, fields, labels) {
 
   return {
     kind,
-    subject,
+    subject: headerValue(subject, 160),
+    office: office || null,
     replyTo: headerValue(fields.email || fields.fb_email || '', 254) || null,
     text: lines.join('\n'),
     fields,

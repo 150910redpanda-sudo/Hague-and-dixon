@@ -89,7 +89,8 @@ Set in the Vercel project (Production and Preview):
 | `ALLOWED_ORIGINS` | Extra origins allowed to POST, comma-separated. The canonical domain is always allowed. |
 | `GRAPH_TENANT_ID` `GRAPH_CLIENT_ID` `GRAPH_CLIENT_SECRET` | Graph app registration (`Mail.Send` application permission, admin-consented). |
 | `MAIL_SENDER` | Mailbox the mail is sent *from*. Must pass SPF/DKIM — see `SECURITY.md`. |
-| `MAIL_TO` | Where submissions are delivered, comma-separated. |
+| `MAIL_TO` | Where submissions are delivered, comma-separated. Used for feedback, and as the fallback for any office below that is not set. |
+| `MAIL_TO_YORK` `MAIL_TO_STAMFORD_BRIDGE` `MAIL_TO_PICKERING` | Optional per-office mailboxes for the contact form's office picker, comma-separated. Unset offices fall back to `MAIL_TO`. The visitor's choice is only ever a key into this list — a submitted address is never used as a recipient. |
 | `FORM_WEBHOOK_URL` `FORM_WEBHOOK_SECRET` | For `MAIL_TRANSPORT=webhook`. |
 
 ### Rate limiting

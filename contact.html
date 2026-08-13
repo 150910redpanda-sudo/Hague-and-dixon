@@ -248,14 +248,14 @@
     <nav class="menu" aria-label="Primary">
       <a href="index.html">Home</a><a href="services.html">What We Do</a>
       <a href="team.html">Our People</a><a href="costs.html">Costs</a><a href="offices.html">Offices</a><a href="about.html">About</a>
-      <div class="nav-drop"><a href="contact.html" class="cta active" aria-current="page">Contact</a><div class="drop-pane"><a href="contact.html" class="cur">Contact Us</a><a href="recruitment.html">Careers</a><a href="https://forms.office.com/pages/responsepage.aspx?id=SA3J_IdNCEaECRnh02fTCsXRpRPDlelGkpPwH34QiXRURVNIVVUwTjZOOEQ4UVdBREJCMFFOSUhUSC4u&amp;route=shorturl" target="_blank" rel="noopener noreferrer">Client Feedback</a></div></div>
+      <a href="recruitment.html">Careers</a><div class="nav-drop"><a href="contact.html" class="cta active" aria-current="page">Contact</a><div class="drop-pane"><a href="contact.html" class="cur">Contact Us</a><a href="https://forms.office.com/pages/responsepage.aspx?id=SA3J_IdNCEaECRnh02fTCsXRpRPDlelGkpPwH34QiXRURVNIVVUwTjZOOEQ4UVdBREJCMFFOSUhUSC4u&amp;route=shorturl" target="_blank" rel="noopener noreferrer">Client Feedback</a></div></div>
     </nav>
     <button class="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu"><span></span><span></span><span></span></button>
   </div>
 </header>
 <div class="mobile-menu" id="mobile-menu">
   <a href="index.html">Home</a><a href="services.html">What We Do</a>
-  <a href="team.html">Our People</a><a href="costs.html">Costs</a><a href="offices.html">Offices</a><a href="about.html">About</a><a href="contact.html">Contact</a><a href="recruitment.html">Careers</a>
+  <a href="team.html">Our People</a><a href="costs.html">Costs</a><a href="offices.html">Offices</a><a href="about.html">About</a><a href="recruitment.html">Careers</a><a href="contact.html">Contact</a>
   <a href="https://forms.office.com/pages/responsepage.aspx?id=SA3J_IdNCEaECRnh02fTCsXRpRPDlelGkpPwH34QiXRURVNIVVUwTjZOOEQ4UVdBREJCMFFOSUhUSC4u&amp;route=shorturl" target="_blank" rel="noopener noreferrer">Client Feedback</a>
   <span class="mm-foot">York · Stamford Bridge · Pickering</span>
 </div>
@@ -283,9 +283,9 @@
           <h3>This form needs JavaScript</h3>
           <p>Your browser has JavaScript turned off, so this form cannot be sent. Please contact us directly and we will be glad to help:</p>
           <ul>
-            <li>York — <a href="tel:+441904627111">(01904) 627111</a> · <a href="mailto:york@hague-dixon.co.uk">york@hague-dixon.co.uk</a></li>
-            <li>Stamford Bridge — <a href="tel:+441759371634">(01759) 371634</a> · <a href="mailto:stamfordbridge@hague-dixon.co.uk">stamfordbridge@hague-dixon.co.uk</a></li>
-            <li>Pickering — <a href="tel:+441751475222">(01751) 475222</a> · <a href="mailto:pickering@hague-dixon.co.uk">pickering@hague-dixon.co.uk</a></li>
+            <li>York<a href="tel:+441904627111">(01904) 627111</a> · <a href="mailto:york@hague-dixon.co.uk">york@hague-dixon.co.uk</a></li>
+            <li>Stamford Bridge<a href="tel:+441759371634">(01759) 371634</a> · <a href="mailto:stamfordbridge@hague-dixon.co.uk">stamfordbridge@hague-dixon.co.uk</a></li>
+            <li>Pickering<a href="tel:+441751475222">(01751) 475222</a> · <a href="mailto:pickering@hague-dixon.co.uk">pickering@hague-dixon.co.uk</a></li>
           </ul>
         </div>
       </div>
@@ -303,6 +303,14 @@
             <option>Careers / Recruitment</option>
             <option>Something else</option>
           </select>
+        </div>
+        <div class="field"><label for="office">Which office should this go to?</label>
+          <select id="office" name="office">
+            <option value="York" data-mailto="york@hague-dixon.co.uk">York — york@hague-dixon.co.uk</option>
+            <option value="Stamford Bridge" data-mailto="stamfordbridge@hague-dixon.co.uk">Stamford Bridge — stamfordbridge@hague-dixon.co.uk</option>
+            <option value="Pickering" data-mailto="pickering@hague-dixon.co.uk">Pickering — pickering@hague-dixon.co.uk</option>
+          </select>
+          <p class="field-hint">Not sure? Leave it as York and we will pass your enquiry to the right person.</p>
         </div>
         <div class="field"><label for="msg">Your message <abbr title="required" class="req">*</abbr></label><textarea id="msg" name="msg" data-required maxlength="4000" placeholder="A few details about your situation…"></textarea></div>
         <button type="submit" class="btn btn-submit">Send enquiry <span class="arr">→</span></button>
