@@ -860,6 +860,47 @@ section.band .rev-wheel .quote p{ font-size:.92rem; line-height:1.55; }
 }
 .office:hover .office-photo img{ transform:scale(1.04); }
 
+/* ---------- Office location maps ----------
+   Google embeds, loaded with the page. The disclosure in .map-source and the
+   entries in cookies.html / privacy.html exist because of that. */
+/* One embed, not three: Google throttles multiple keyless map iframes on a
+   single page, and the second and third render blank. */
+.map-panel{
+  display:grid; grid-template-columns:1.6fr 1fr; align-items:stretch;
+  background:var(--cream); border:1px solid var(--line);
+  border-radius:4px; overflow:hidden;
+}
+/* A definite height, not height:100%. Google measures the iframe as soon as it
+   loads; if the height still depends on the sibling column being laid out, the
+   map can size itself against a collapsed box and render as a small square. */
+.map-frame{ display:block; width:100%; height:480px; border:0; }
+.map-key{
+  list-style:none; margin:0; padding:32px;
+  display:flex; flex-direction:column; justify-content:center; gap:26px;
+  border-left:1px solid var(--line);
+}
+.map-key li{
+  position:relative; padding-left:26px;
+  font-size:.92rem; line-height:1.55; color:var(--mist);
+}
+.map-key strong{
+  display:block; font-family:var(--serif); font-size:1.25rem;
+  font-weight:400; color:var(--teal); margin-bottom:4px;
+}
+.mk-pin{
+  position:absolute; left:0; top:7px; width:11px; height:11px;
+  border-radius:50% 50% 50% 0; transform:rotate(-45deg);
+  background:var(--brass);
+}
+.map-source{
+  margin-top:24px; font-size:.82rem; line-height:1.6; color:var(--mist);
+}
+@media (max-width:820px){
+  .map-panel{ grid-template-columns:1fr; }
+  .map-frame{ height:340px; }
+  .map-key{ border-left:0; border-top:1px solid var(--line); }
+}
+
 /* ============================================================
    ACCREDITATION LOGO IMAGES
    ============================================================ */
